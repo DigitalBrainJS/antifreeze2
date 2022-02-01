@@ -1,0 +1,60 @@
+{
+  "name": "antifreeze2",
+  "version": "0.0.1",
+  "description": "Tiny helper to prevent the event loop from getting stuck in asynchronous routines",
+  "main": "lib/antifreeze2.js",
+  "type": "module",
+  "scripts": {
+    "docs": "jsdoc2md -t jsdoc2md/README.hbs lib/antifreeze2.js > README.md",
+    "test": "nyc --reporter=html --reporter=text mocha ./test/antifreeze2.spec.js --exit --timeout=3000",
+    "test:only": "mocha ./test/antifreeze2.spec.js --exit --timeout=3000",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "prepublishOnly": "npm run test:coverage && npm run docs",
+    "postversion": "git push && git push --tags",
+    "changelog": "auto-changelog -p",
+    "version": "npm run changelog  && git add CHANGELOG.md",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "async",
+    "eventloop",
+    "unfreeze",
+    "computation",
+    "await",
+    "generator",
+    "yield",
+    "heavy",
+    "multithread",
+    "unstack",
+    "tick",
+    "watch",
+    "defreeze",
+    "defrost",
+    "resolve",
+    "promise",
+    "libuv"
+  ],
+  "files": [
+    "dist/antifreeze2.umd.js"
+  ],
+  "author": "Dmitriy Mozgovoy",
+  "license": "MIT",
+  "devDependencies": {
+    "auto-changelog": "^2.2.1",
+    "husky": "^6.0.0",
+    "jsdoc-to-markdown": "^5.0.3",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
+    "rollup": "^2.6.1"
+  },
+  "auto-changelog": {
+    "output": "CHANGELOG.md",
+    "unreleased": true,
+    "commitLimit": false
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run docs && git add ."
+    }
+  }
+}
