@@ -1,6 +1,6 @@
 # antifreeze2
 [![Build Status](https://travis-ci.com/DigitalBrainJS/antifreeze2.svg?branch=master)](https://travis-ci.com/DigitalBrainJS/antifreeze2)
-[![](https://badgen.net/npm/license/antifreeze2)](https://unpkg.com/antifreeze2/lib/antifreeze2.js)
+[![](https://badgen.net/npm/license/antifreeze2)](https://unpkg.com/antifreeze2/dist/antifreeze2.umd.js)
 [![Coverage Status](https://coveralls.io/repos/github/DigitalBrainJS/antifreeze2/badge.svg?branch=master)](https://coveralls.io/github/DigitalBrainJS/antifreeze2?branch=master)
 [![](https://badgen.net/github/issues/DigitalBrainJS/antifreeze2)](https://github.com/DigitalBrainJS/antifreeze2/issues)
 [![](https://badgen.net/github/stars/DigitalBrainJS/antifreeze2)](https://github.com/DigitalBrainJS/antifreeze2/stargazers)
@@ -39,7 +39,7 @@ If we write the function as synchronous or just use an ECMA asynchronous functio
 We won't be able to perform other tasks like accepting new connections, I/O events, timers, etc. because we only have one thread.
 To avoid this, we must ensure that the event loop tick duration does not exceed the allowed range of 15-20ms in order for the application to remain responsive.
 
-By default max eventloop tick is set to **15ms**. You can change it using `watchTick(maxTick: number)` function.
+By default, the desired event loop tick is set to **10ms**. You can change it using `watchTick(maxTick: number)` function.
 [See online demo](https://codesandbox.io/s/antifreeze2-basic-example-ulsvq?file=/src/index.js)
 ```js
 import {antifreeze, isNeeded} from "antifreeze2";
@@ -51,8 +51,8 @@ const fibAsync = async(n) => {
     sum = a + b;
     a = b;
     b = sum;
-    if (isNeeded()) {      // if eventloop is delayed
-      await antifreeze();  // call this function to unblock it (you have to do this from time to time)
+    if (isNeeded()) {      // If more than 10ms have passed since the last run of the eventloop cycle
+      await antifreeze();  // let the event loop get polled
     }
   }
   return b;
@@ -78,6 +78,24 @@ const fibAsync = async(n) => {
 })(500000);
 ```
 
+Optionally, to get the maximum performance, you can throttle the `isNeeded()` call by using some counter:
+
+```js
+const fibAsync = async(n) => {
+  let a = 1n, b = 1n, sum, i = n - 2;
+  while (i-- > 0) {
+    sum = a + b;
+    a = b;
+    b = sum;
+    // check only every 1000th cycle
+    if (!(i % 1000) && isNeeded()) {      // If more than 10ms have passed since the last run of the eventloop cycle
+      await antifreeze();  // let the event loop get polled
+    }
+  }
+  return b;
+};
+```
+
 #### Example 2 - koa server with heavy computation
 
 [See online demo](https://codesandbox.io/s/festive-pine-fwehi?file=/src/index.js)
@@ -86,7 +104,7 @@ The application has two endpoints:
 
 [Time request](https://fwehi.sse.codesandbox.io/time) - light query with 20ms latency
 
-[Fibonacci request](https://fwehi.sse.codesandbox.io/fibonacci/1000000) - heavy query that take 10s to complete
+[Fibonacci request](https://fwehi.sse.codesandbox.io/fibonacci/1000000) - heavy query that takes 10s to complete
 
 Note that while a heavy request is being executed, the server continues to process light requests even though it is only running in one thread.
 

@@ -4,6 +4,15 @@
   "description": "Tiny helper to prevent the event loop from getting stuck in asynchronous routines",
   "main": "lib/antifreeze2.js",
   "type": "module",
+  "author": {
+    "name": "Dmitriy Mozgovoy",
+    "email": "robotshara@gmail.com",
+    "url": "http://github.com/DigitalBrainJS/"
+  },
+  "repository": "https://github.com/DigitalBrainJS/antifreeze2.git",
+  "bugs": {
+    "url": "https://github.com/DigitalBrainJS/antifreeze2/issues"
+  },
   "scripts": {
     "docs": "jsdoc2md -t jsdoc2md/README.hbs lib/antifreeze2.js > README.md",
     "test": "mocha ./test/antifreeze2.spec.js --exit --timeout=3000",
@@ -19,6 +28,7 @@
   },
   "keywords": [
     "async",
+    "cpu-bound",
     "eventloop",
     "unfreeze",
     "computation",
@@ -34,12 +44,13 @@
     "defrost",
     "resolve",
     "promise",
-    "libuv"
+    "libuv",
+    "cpu",
+    "calculation"
   ],
   "files": [
     "dist/antifreeze2.umd.js"
   ],
-  "author": "Dmitriy Mozgovoy",
   "license": "MIT",
   "devDependencies": {
     "auto-changelog": "^2.2.1",
