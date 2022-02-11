@@ -1,6 +1,6 @@
 {
   "name": "antifreeze2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tiny helper to prevent the event loop from getting stuck in asynchronous routines",
   "main": "lib/antifreeze2.js",
   "type": "module",
